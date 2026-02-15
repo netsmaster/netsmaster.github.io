@@ -37,9 +37,6 @@
          <img src="{{site.logo | relative_url}}" alt="Logo" />
          {% endif %}
          <p>{{ site.description | default: site.github.project_tagline }}</p>
-         {% if site.github.is_user_page %}
-         <p class="view"><a href="{{ site.github.owner_url }}">View My GitHub Profile</a></p>
-         {% endif %}
          {% if site.show_downloads %}
          <ul class="downloads">
             <li><a href="{{ site.github.zip_url }}">Download <strong>ZIP File</strong></a></li>
@@ -54,7 +51,6 @@
       </section>
       {% unless page.hide_sidebar %}
       <footer>
-         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
       {% endunless %}
    </div>
