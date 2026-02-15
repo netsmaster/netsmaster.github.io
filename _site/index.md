@@ -3,7 +3,7 @@
 ---
 ### Games
 
-- [Wing lift](http://example.com/)
+- [Wing lift](https://www.reddit.com/r/wing_lift_dev/)
 
 
 <!-- - [Project 2 Title](http://example.com/)
@@ -16,7 +16,7 @@
 
 ### Posts
 
-[Project 1 Title](/sample_page)
+[Wing lift implementation](/wing_lift_intro)
 
 <!-- <img src="images/dummy_thumbnail.jpg?raw=true"/> -->
 

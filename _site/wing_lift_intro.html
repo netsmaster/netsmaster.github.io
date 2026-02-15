@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+   
+   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-000000-0"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', 'UA-000000-0');
+   </script>
+   
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Wing Lift: Technical Design Notes | Yongjie’s Page</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Wing Lift: Technical Design Notes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A few games and posts" />
+<meta property="og:description" content="A few games and posts" />
+<link rel="canonical" href="http://localhost:4000/wing_lift_intro.html" />
+<meta property="og:url" content="http://localhost:4000/wing_lift_intro.html" />
+<meta property="og:site_name" content="Yongjie’s Page" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Wing Lift: Technical Design Notes" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"A few games and posts","headline":"Wing Lift: Technical Design Notes","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/images/profile.jpg?raw=true"}},"url":"http://localhost:4000/wing_lift_intro.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+   <link rel="stylesheet" href="/assets/css/style.css?v=255ac34cd205365867648af624f41cd4a85a4643">
+   
+   <style>
+      section.full-width {
+         float: none;
+         width: 100%;
+      }
+   </style>
+   
+   <!--[if lt IE 9]>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+   <![endif]-->
+</head>
+<body>
+   <div class="wrapper">
+      
+      <section class="full-width">
+         <h1 id="wing-lift-technical-design-notes">Wing Lift: Technical Design Notes</h1>
+
+<h2 id="overview">Overview</h2>
+
+<p>Wing Lift is an interactive aerodynamics game where players draw airfoil shapes and receive real-time feedback on their aerodynamic performance. The game uses mathematical models from potential flow theory to analyze wing designs and compute performance metrics.</p>
+
+<h2 id="core-gameplay-flow">Core Gameplay Flow</h2>
+
+<ol>
+  <li><strong>Drawing Phase</strong>: Players draw an airfoil shape on a canvas using mouse or touch input</li>
+  <li><strong>Fitting Phase</strong>: The game automatically fits a Joukowski airfoil to the user’s drawing</li>
+  <li><strong>Analysis Phase</strong>: Aerodynamic properties are computed and visualized</li>
+  <li><strong>Scoring Phase</strong>: A performance score is calculated based on lift, thickness, and volume</li>
+</ol>
+
+<h2 id="technical-architecture">Technical Architecture</h2>
+
+<h3 id="mathematical-foundation">Mathematical Foundation</h3>
+
+<h4 id="joukowski-transformation">Joukowski Transformation</h4>
+<p>The game uses the <strong>Joukowski transformation</strong>, a conformal mapping from complex analysis that transforms circles into airfoil shapes:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z = ζ + 1/ζ
+</code></pre></div></div>
+
+<p>Where:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ζ</code> (zeta) represents a point in the circle plane</li>
+  <li><code class="language-plaintext highlighter-rouge">z</code> represents the corresponding point in the physical airfoil plane</li>
+</ul>
+
+<p>This transformation allows the game to work with simple circle geometries while producing realistic airfoil shapes.</p>
+
+<h4 id="potential-flow-theory">Potential Flow Theory</h4>
+<p>The aerodynamic analysis is based on <strong>potential flow theory</strong>, which models inviscid, incompressible flow around the airfoil. The flow is composed of:</p>
+
+<ul>
+  <li><strong>Uniform flow</strong>: Free-stream velocity</li>
+  <li><strong>Doublet</strong>: Models the airfoil’s blockage effect</li>
+  <li><strong>Vortex</strong>: Implements the Kutta condition (smooth flow at trailing edge)</li>
+</ul>
+
+<p>The circulation <code class="language-plaintext highlighter-rouge">Γ</code> is determined by the Kutta condition: <code class="language-plaintext highlighter-rouge">Γ = 4πU·y₀</code>, where <code class="language-plaintext highlighter-rouge">U</code> is the free-stream velocity and <code class="language-plaintext highlighter-rouge">y₀</code> is the circle center offset.</p>
+
+<h3 id="key-algorithms">Key Algorithms</h3>
+
+<h4 id="1-shape-normalization-extractts">1. Shape Normalization (<code class="language-plaintext highlighter-rouge">extract.ts</code>)</h4>
+<ul>
+  <li><strong>PCA Alignment</strong>: Uses Principal Component Analysis to align the airfoil chord horizontally</li>
+  <li><strong>Resampling</strong>: Uniformly resamples the drawn shape by arc-length</li>
+  <li><strong>Envelope Extraction</strong>: Bins the shape into x-stations to extract upper and lower surfaces</li>
+  <li><strong>Thickness/Camber Calculation</strong>: Computes maximum thickness and camber distributions</li>
+</ul>
+
+<h4 id="2-joukowski-fitting-joukowskits">2. Joukowski Fitting (<code class="language-plaintext highlighter-rouge">joukowski.ts</code>)</h4>
+<ul>
+  <li><strong>Two-Stage Search</strong>: Coarse grid search followed by local refinement</li>
+  <li><strong>Parameter Space</strong>: Searches over <code class="language-plaintext highlighter-rouge">(x₀, y₀)</code> circle center offsets</li>
+  <li><strong>Distance Metric</strong>: Uses bidirectional Hausdorff distance to match user’s drawing</li>
+  <li><strong>Orientation Detection</strong>: Automatically detects leading/trailing edges by analyzing vertex sharpness</li>
+</ul>
+
+<h4 id="3-streamline-computation-streamlinests">3. Streamline Computation (<code class="language-plaintext highlighter-rouge">streamlines.ts</code>)</h4>
+<ul>
+  <li><strong>RK4 Integration</strong>: Uses 4th-order Runge-Kutta method to trace streamlines</li>
+  <li><strong>Velocity Field</strong>: Computes velocity at each point by inverting the Joukowski transformation</li>
+  <li><strong>Boundary Handling</strong>: Detects when streamlines approach the airfoil body or leave the domain</li>
+</ul>
+
+<h4 id="4-performance-scoring-wing2ts">4. Performance Scoring (<code class="language-plaintext highlighter-rouge">wing2.ts</code>)</h4>
+<ul>
+  <li><strong>Lift Coefficient (CL)</strong>: Computed via pressure integration around the airfoil</li>
+  <li><strong>Volume (Vol)</strong>: Cross-sectional area of the airfoil</li>
+  <li><strong>Thickness (Thick)</strong>: Maximum vertical extent</li>
+  <li><strong>Score Formula</strong>:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>score = -Thick·sin(Thick^1.5·4π/0.65) 
+      + 10·(0.1·min(Vol,4.5)² - 0.83·Thick² + Thick^0.15) 
+      + CL
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="implementation-details">Implementation Details</h3>
+
+<h4 id="coordinate-systems">Coordinate Systems</h4>
+<p>The game uses multiple coordinate systems:</p>
+<ul>
+  <li><strong>Canvas Coordinates</strong>: Raw pixel coordinates from user input</li>
+  <li><strong>Physical Coordinates</strong>: Joukowski-transformed coordinates for streamlines</li>
+  <li><strong>Normalized Coordinates</strong>: Chord-normalized coordinates (x ∈ [0,1]) for analysis</li>
+</ul>
+
+<h4 id="validation">Validation</h4>
+<ul>
+  <li><strong>Self-Intersection Detection</strong>: Ensures the drawn shape is valid</li>
+  <li><strong>Aspect Ratio Check</strong>: Prevents overly round shapes that can’t be analyzed</li>
+  <li><strong>Finite Point Validation</strong>: Filters out invalid numerical results</li>
+</ul>
+
+<h4 id="visualization">Visualization</h4>
+<ul>
+  <li><strong>Canvas Rendering</strong>: Uses HTML5 Canvas for real-time drawing</li>
+  <li><strong>Transform Stack</strong>: Applies multiple coordinate transformations for proper alignment</li>
+  <li><strong>Streamline Visualization</strong>: Renders flow field as red polylines after scoring</li>
+</ul>
+
+<h2 id="technical-stack">Technical Stack</h2>
+
+<ul>
+  <li><strong>Frontend</strong>: React + TypeScript + Canvas API</li>
+  <li><strong>Build System</strong>: Vite</li>
+  <li><strong>Platform</strong>: Reddit Devvit (runs in webview)</li>
+  <li><strong>Mathematics</strong>: Custom implementations of complex analysis algorithms</li>
+</ul>
+
+<h2 id="performance-considerations">Performance Considerations</h2>
+
+<ul>
+  <li><strong>Async Fitting</strong>: Airfoil fitting runs asynchronously to avoid blocking the UI</li>
+  <li><strong>Point Sampling</strong>: Streamlines and distance calculations use adaptive sampling</li>
+  <li><strong>Numerical Stability</strong>: Careful handling of singularities near the airfoil body</li>
+  <li><strong>Coordinate Transformations</strong>: Efficient matrix operations for PCA and normalization</li>
+</ul>
+
+<h2 id="future-enhancements">Future Enhancements</h2>
+
+<p>Potential improvements could include:</p>
+<ul>
+  <li>Real-time streamline visualization during drawing</li>
+  <li>Multiple angle of attack analysis</li>
+  <li>Drag coefficient calculations</li>
+  <li>Comparison with standard airfoil profiles (NACA series)</li>
+  <li>Export functionality for CAD software</li>
+</ul>
+
+      </section>
+      
+   </div>
+   <script src="/assets/js/scale.fix.js"></script>
+</body>
+</html>
