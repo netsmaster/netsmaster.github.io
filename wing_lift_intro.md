@@ -106,8 +106,5 @@ The game uses multiple coordinate systems:
 ## Future Enhancements
 
 Potential improvements could include:
-- Real-time streamline visualization during drawing
 - Multiple angle of attack analysis
-- Drag coefficient calculations
-- Comparison with standard airfoil profiles (NACA series)
-- Export functionality for CAD software
+- More game features, such as taking off
