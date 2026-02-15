@@ -16,7 +16,7 @@
 
 ### Posts
 
-[Wing lift implementation](/wing_lift_intro)
+- [Wing lift implementation](/wing_lift_intro)
 
 <!-- <img src="images/dummy_thumbnail.jpg?raw=true"/> -->
 
