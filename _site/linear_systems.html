@@ -15,9 +15,9 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Yongjie’s Page | A few games and posts about computational physics</title>
+<title>Large-Scale Linear System Solvers in Scientific Simulation | Yongjie’s Page</title>
 <meta name="generator" content="Jekyll v3.10.0" />
-<meta property="og:title" content="Yongjie’s Page" />
+<meta property="og:title" content="Large-Scale Linear System Solvers in Scientific Simulation" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="A few games and posts about computational physics" />
 <meta property="og:description" content="A few games and posts about computational physics" />
@@ -26,12 +26,12 @@
 <meta property="og:site_name" content="Yongjie’s Page" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Yongjie’s Page" />
+<meta property="twitter:title" content="Large-Scale Linear System Solvers in Scientific Simulation" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"A few games and posts about computational physics","headline":"Yongjie’s Page","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/images/profile.jpg?raw=true"}},"url":"http://localhost:4000/linear_systems.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"A few games and posts about computational physics","headline":"Large-Scale Linear System Solvers in Scientific Simulation","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/images/profile.jpg?raw=true"}},"url":"http://localhost:4000/linear_systems.html"}</script>
 <!-- End Jekyll SEO tag -->
 
-   <link rel="stylesheet" href="/assets/css/style.css?v=7f71282f75b789f82ec6186123c3ffcddc9bd656">
+   <link rel="stylesheet" href="/assets/css/style.css?v=f2e82e00627d5d312654ad53aac1560306b99616">
    
    <style>
       section.full-width {
@@ -60,7 +60,170 @@
    <div class="wrapper">
       
       <section class="full-width">
-         
+         <h1 id="large-scale-linear-system-solvers-in-scientific-simulation">Large-Scale Linear System Solvers in Scientific Simulation</h1>
+
+<h2 id="why-linear-solves-dominate-runtime-in-simulation-codes">Why linear solves dominate runtime in simulation codes</h2>
+
+<p>Large simulation codes (e.g., CFD and aeroelasticity) repeatedly form and solve linear systems, either as the main step in a linear PDE solve or as an inner kernel in nonlinear iterations (e.g., Newton–Krylov) and implicit time integration. In practice, solver choice and preconditioning often dominate end-to-end runtime because they control memory traffic, iteration counts, and data movement as much as raw FLOPs.</p>
+
+<p>At a high level, solvers fall into two families: direct (factorization-based) and iterative (residual-reduction). For truly large sparse systems, iterative methods are often preferred when a good preconditioner exists, because sparse direct factorization can be memory-limited.</p>
+
+<hr />
+
+<h2 id="the-mathematical-form">The mathematical form</h2>
+
+<p>The canonical problem is the linear system</p>
+
+\[A x = b,\]
+
+<p>where $A \in \mathbb{R}^{N \times N}$ (or $A \in \mathbb{C}^{N \times N}$) is the assembled operator, $b$ is the known right-hand side, and $x$ is the unknown (often called the stiffness/operator matrix in engineering codes).</p>
+
+<p>For solver selection and debugging, the highest-impact operator properties are:</p>
+
+<h3 id="conditioning">Conditioning</h3>
+
+<p>A standard matrix condition number (with respect to a chosen norm) is</p>
+
+\[\kappa(A) = \|A\| \, \|A^{-1}\|.\]
+
+<p>Large $\kappa(A)$ implies sensitivity to perturbations and rounding; you can see this in practice when residuals look fine but the solution is unreliable. MATLAB exposes this with <code class="language-plaintext highlighter-rouge">cond(A)</code>.</p>
+
+<h3 id="rank-and-nonuniqueness">Rank and (non)uniqueness</h3>
+
+<p>If $A$ is rank-deficient (or nearly so), solutions can be non-unique or unstable, and one typically uses least-squares / minimum-norm formulations depending on modeling intent.</p>
+
+<h3 id="sparsity-pattern-and-fill-in-behavior">Sparsity pattern and fill-in behavior</h3>
+
+<p>PDE discretizations often yield sparse matrices, and performance depends on the nonzero pattern: direct methods can create fill-in during factorization, while iterative methods depend on sparse matvec and preconditioner cost (nonzeros, cache locality, and parallel communication).</p>
+
+<h3 id="symmetry-and-definiteness">Symmetry and definiteness</h3>
+
+<p>These determine which algorithms are appropriate (e.g., CG requires SPD). Many production solvers dispatch automatically based on structure; MATLAB’s <code class="language-plaintext highlighter-rouge">mldivide</code> (<code class="language-plaintext highlighter-rouge">A\B</code>) chooses different paths for dense vs sparse and for structural properties such as symmetry.</p>
+
+<hr />
+
+<h2 id="direct-methods-in-practice-factorization-not-explicit-inversion">Direct methods in practice: factorization, not explicit inversion</h2>
+
+<p>In practice, direct methods mean “factorize then solve” (LU, Cholesky, QR, …), not “form $A^{-1}$”. Explicit inversion is typically worse for both stability and performance (e.g., prefer <code class="language-plaintext highlighter-rouge">A\b</code> over <code class="language-plaintext highlighter-rouge">inv(A)*b</code>).</p>
+
+<p>For dense or moderately sized systems, common factorizations include LU, Cholesky (SPD), LDLT (some symmetric indefinite forms), QR, SVD, and Schur (these are core building blocks in LAPACK-style workflows).</p>
+
+<p>For example, the Schur decomposition is commonly presented as</p>
+
+\[A = Q T Q^*,\]
+
+<p>with $Q$ unitary and $T$ upper triangular.</p>
+
+<p>For sparse systems, controlling fill-in is central. A typical sparse direct workflow is:</p>
+
+<ol>
+  <li>Fill-reducing ordering (e.g., approximate minimum degree)</li>
+  <li>Symbolic analysis</li>
+  <li>Numerical factorization</li>
+  <li>Triangular solves (forward/back substitution)</li>
+</ol>
+
+<p>Common sparse direct components include UMFPACK (sparse LU, unsymmetric) and CHOLMOD (sparse Cholesky, SPD), both in SuiteSparse. Direct solvers are often valued for robustness (no convergence tuning), but may be memory-limited; some packages (e.g., PARDISO) support out-of-core factor storage when RAM is insufficient.</p>
+
+<hr />
+
+<h2 id="iterative-methods-krylov-solvers-and-the-central-role-of-preconditioning">Iterative methods: Krylov solvers and the central role of preconditioning</h2>
+
+<p>Iterative solvers generate a sequence ${x_k}$ and monitor the residual</p>
+
+\[r_k = b - A x_k,\]
+
+<p>using norms such as $|r_k|$ for stopping criteria (see standard Krylov references such as Saad).</p>
+
+<p>Classical stationary methods (Jacobi, Gauss–Seidel, SOR) are useful building blocks but are often too slow alone at scale; modern workflows emphasize Krylov methods with strong preconditioning (often multigrid-based).</p>
+
+<p>Common Krylov methods in computational physics:</p>
+
+<ul>
+  <li>CG (Hestenes–Stiefel): for symmetric positive definite (SPD) systems.</li>
+  <li>GMRES (Saad–Schultz): a standard choice for nonsymmetric systems (minimizes residual over the Krylov space).</li>
+  <li>BiCGStab: a stabilized nonsymmetric method often used when GMRES restart/storage is a concern.</li>
+</ul>
+
+<p>In large-scale simulation, preconditioning is usually the difference between success and failure. The idea is to introduce an operator $M \approx A$ that is cheaper to apply, using left/right/split forms; for SPD problems, split forms can preserve symmetry (e.g., incomplete Cholesky), while ILU variants are common for nonsymmetric operators.</p>
+
+<p>In production CFD tooling this shows up as preconditioner menus (e.g., OpenFOAM’s DIC/DILU and faster variants such as FDIC).</p>
+
+<hr />
+
+<h2 id="multigrid-and-fast-algorithms-for-special-matrix-structures">Multigrid and fast algorithms for special matrix structures</h2>
+
+<p>For many PDE operators, multigrid is among the most effective approaches because it targets error components across scales using a hierarchy of levels. Multigrid can be used as a solver or as a preconditioner for Krylov iterations.</p>
+
+<p>In practice (e.g., OpenFOAM’s GAMG), you build coarse levels, solve or smooth on the coarsest level, and prolongate corrections to the fine level. Applicability is operator-dependent (often assuming properties like positive definiteness / diagonal dominance), and overly coarse meshes can fail to build enough coarsening levels in real workflows.
+Some platforms call this out explicitly (e.g., SimScale notes GAMG issues when coarsening levels cannot be formed on very coarse meshes).</p>
+
+<p>For dense systems from boundary integral formulations, naive storage/matvec is often $O(N^2)$. Fast multipole methods (FMM, Greengard–Rokhlin) accelerate matrix–vector products and reduce storage, typically as the fast matvec inside an iterative solver.</p>
+
+<hr />
+
+<h2 id="software-ecosystems-and-a-practical-workflow-from-prototype-to-hpc">Software ecosystems and a practical workflow from prototype to HPC</h2>
+
+<p>A typical HPC solver stack has three layers:</p>
+
+<ol>
+  <li>High-level solver choice and stopping criteria</li>
+  <li>Preconditioning and reordering</li>
+  <li>Low-level kernels (dense GEMM, sparse SpMV, triangular solves) that are hardware-sensitive</li>
+</ol>
+
+<p>Common libraries you will see in practice:</p>
+
+<ul>
+  <li>Dense: BLAS + LAPACK; distributed dense: ScaLAPACK.</li>
+  <li>Sparse direct: SuiteSparse (UMFPACK, CHOLMOD), SuperLU, MUMPS, vendor solvers such as Intel oneMKL PARDISO (including out-of-core modes).</li>
+  <li>Parallel iterative frameworks: PETSc (KSP), Trilinos (Belos for Krylov, Amesos2 as a direct-solver interface).</li>
+  <li>Legacy/other: SPOOLES, TAUCS, SparseLib++, IML++.</li>
+</ul>
+
+<hr />
+
+<h2 id="prototyping-verification-and-matlab-as-a-reference-point">Prototyping, verification, and MATLAB as a reference point</h2>
+
+<p>MATLAB’s <code class="language-plaintext highlighter-rouge">A\B</code> (<code class="language-plaintext highlighter-rouge">mldivide</code>) is a good mental model for structure-aware dispatch: it chooses different algorithms for dense vs sparse inputs, exploits symmetry when possible, warns on near-singularity, and uses least-squares behavior for rectangular problems. If $A$ is sparse, keep $B$ (and therefore $x$) sparse when appropriate.</p>
+
+<p>A small but concrete example is</p>
+
+\[\begin{aligned}
+4x + 2y &amp;= 40, \\
+x + y &amp;= 15,
+\end{aligned}
+\qquad\Rightarrow\qquad
+A =
+\begin{bmatrix}
+4 &amp; 2 \\
+1 &amp; 1
+\end{bmatrix},
+\quad
+b =
+\begin{bmatrix}
+40 \\
+15
+\end{bmatrix}.\]
+
+<p>In MATLAB notation, one writes:</p>
+
+<p><code class="language-plaintext highlighter-rouge">x = A\b;</code></p>
+
+<p>For large problems, dense storage becomes infeasible quickly: a $10^5 \times 10^5$ dense double matrix has $10^{10}$ entries, requiring about 80 GB just to store $A$ (before factorization overhead).</p>
+
+<p>For PDE-derived sparse systems, the correct workflow is to assemble $A$ in sparse form from the beginning and then choose either a sparse direct solver (if memory allows) or a preconditioned Krylov method tailored to symmetry and definiteness.</p>
+
+<p>Production CFD codes expose these choices directly (e.g., OpenFOAM <code class="language-plaintext highlighter-rouge">fvSolution</code> lets you pick Krylov solvers like PCG/PBiCGStab or multigrid like GAMG, plus tolerances and preconditioners).</p>
+
+<h2 id="practical-takeaway">Practical takeaway</h2>
+
+<p>A solver strategy should be selected in the following order:</p>
+<ol>
+  <li>Characterize $A$ (sparsity, symmetry, definiteness, conditioning, rank issues).</li>
+  <li>Choose a solver class (direct vs Krylov vs multigrid).</li>
+  <li>Invest in ordering and preconditioning; they often dominate real performance and robustness.</li>
+</ol>
 
       </section>
       
