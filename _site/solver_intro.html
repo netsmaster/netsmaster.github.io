@@ -31,12 +31,31 @@
 {"@context":"https://schema.org","@type":"WebPage","description":"A few games and posts about computational physics","headline":"Concept, Role, and Characteristics of a Solver","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/images/profile.jpg?raw=true"}},"url":"http://localhost:4000/solver_intro.html"}</script>
 <!-- End Jekyll SEO tag -->
 
-   <link rel="stylesheet" href="/assets/css/style.css?v=f2e82e00627d5d312654ad53aac1560306b99616">
+   <link rel="stylesheet" href="/assets/css/style.css?v=9de03b4f57debc2329f46d30d19233a5ddf1ba33">
    
    <style>
       section.full-width {
          float: none;
          width: 100%;
+      }
+      .post-nav-top {
+         margin: 0 0 1.25rem 0;
+         padding: 0.75rem 0.9rem;
+         border: 1px solid #ddd;
+         background: #fafafa;
+         display: flex;
+         align-items: center;
+         gap: 1rem;
+         flex-wrap: wrap;
+      }
+      .post-nav-top a {
+         text-decoration: none;
+      }
+      .post-nav-top a.next-post-link {
+         margin-left: auto;
+      }
+      .post-nav-top a:hover {
+         text-decoration: underline;
       }
    </style>
    
@@ -60,6 +79,26 @@
    <div class="wrapper">
       
       <section class="full-width">
+         
+         
+         
+         
+         <nav class="post-nav-top" aria-label="Post navigation">
+            <a href="/">Home</a>
+            
+            
+               
+            
+               
+            
+               
+            <a class="next-post-link" href="/PDE_intro.html">Next post: Key Concepts in Partial Differential Equations (PDEs)</a>
+               
+            
+               
+            
+         </nav>
+         
          <h1 id="1-concept-role-and-characteristics-of-a-solver">1. Concept, Role, and Characteristics of a Solver</h1>
 
 <p>In industrial simulation software, the solver is the core computational component responsible for computing multiphysics problems through numerical algorithms. In some systems, it may be called an engine or a kernel program, but these terms refer to the same concept. Constraint solvers in geometric modeling and optimization solvers in operations research are outside the scope of this discussion. Unless otherwise specified, the term <em>solver</em> refers to commercial engineering simulation solvers.</p>

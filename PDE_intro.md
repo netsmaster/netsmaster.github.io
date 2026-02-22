@@ -1,6 +1,7 @@
 ---
 layout: default
 hide_sidebar: true
+nav_order: 3
 ---
 # Key Concepts in Partial Differential Equations (PDEs)
 

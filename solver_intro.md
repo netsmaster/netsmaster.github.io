@@ -1,6 +1,7 @@
 ---
 layout: default
 hide_sidebar: true
+nav_order: 2
 ---
 
 # 1. Concept, Role, and Characteristics of a Solver  

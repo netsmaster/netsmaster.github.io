@@ -31,12 +31,31 @@
 {"@context":"https://schema.org","@type":"WebPage","description":"A few games and posts about computational physics","headline":"Key Concepts in Partial Differential Equations (PDEs)","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/images/profile.jpg?raw=true"}},"url":"http://localhost:4000/PDE_intro.html"}</script>
 <!-- End Jekyll SEO tag -->
 
-   <link rel="stylesheet" href="/assets/css/style.css?v=f2e82e00627d5d312654ad53aac1560306b99616">
+   <link rel="stylesheet" href="/assets/css/style.css?v=9de03b4f57debc2329f46d30d19233a5ddf1ba33">
    
    <style>
       section.full-width {
          float: none;
          width: 100%;
+      }
+      .post-nav-top {
+         margin: 0 0 1.25rem 0;
+         padding: 0.75rem 0.9rem;
+         border: 1px solid #ddd;
+         background: #fafafa;
+         display: flex;
+         align-items: center;
+         gap: 1rem;
+         flex-wrap: wrap;
+      }
+      .post-nav-top a {
+         text-decoration: none;
+      }
+      .post-nav-top a.next-post-link {
+         margin-left: auto;
+      }
+      .post-nav-top a:hover {
+         text-decoration: underline;
       }
    </style>
    
@@ -60,6 +79,26 @@
    <div class="wrapper">
       
       <section class="full-width">
+         
+         
+         
+         
+         <nav class="post-nav-top" aria-label="Post navigation">
+            <a href="/">Home</a>
+            
+            
+               
+            
+               
+            
+               
+            
+               
+            <a class="next-post-link" href="/linear_systems.html">Next post: Large-Scale Linear System Solvers in Scientific Simulation</a>
+               
+            
+         </nav>
+         
          <h1 id="key-concepts-in-partial-differential-equations-pdes">Key Concepts in Partial Differential Equations (PDEs)</h1>
 
 <p>This note summarizes several fundamental aspects of partial differential equations from the perspective of computational physics and numerical modeling. The discussion emphasizes mathematical structure, well-posedness, and implications for numerical discretization.</p>

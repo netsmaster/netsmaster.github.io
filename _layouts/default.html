@@ -22,6 +22,25 @@
          float: none;
          width: 100%;
       }
+      .post-nav-top {
+         margin: 0 0 1.25rem 0;
+         padding: 0.75rem 0.9rem;
+         border: 1px solid #ddd;
+         background: #fafafa;
+         display: flex;
+         align-items: center;
+         gap: 1rem;
+         flex-wrap: wrap;
+      }
+      .post-nav-top a {
+         text-decoration: none;
+      }
+      .post-nav-top a.next-post-link {
+         margin-left: auto;
+      }
+      .post-nav-top a:hover {
+         text-decoration: underline;
+      }
    </style>
    {% endif %}
    <script>
@@ -59,6 +78,24 @@
       </header>
       {% endunless %}
       <section{% if page.hide_sidebar %} class="full-width"{% endif %}>
+         {% if page.hide_sidebar and page.url != "/" %}
+         {% assign nav_pages = site.html_pages | where: "hide_sidebar", true | sort: "nav_order" %}
+         {% assign current_index = -1 %}
+         {% for nav_page in nav_pages %}
+            {% if nav_page.url == page.url %}
+               {% assign current_index = forloop.index0 %}
+            {% endif %}
+         {% endfor %}
+         <nav class="post-nav-top" aria-label="Post navigation">
+            <a href="{{ "/" | relative_url }}">Home</a>
+            {% assign next_index = current_index | plus: 1 %}
+            {% for nav_page in nav_pages %}
+               {% if forloop.index0 == next_index %}
+            <a class="next-post-link" href="{{ nav_page.url | relative_url }}">Next post: {{ nav_page.title | default: nav_page.name }}</a>
+               {% endif %}
+            {% endfor %}
+         </nav>
+         {% endif %}
          {{ content }}
       </section>
       {% unless page.hide_sidebar %}

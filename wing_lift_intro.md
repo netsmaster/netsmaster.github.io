@@ -1,6 +1,7 @@
 ---
 layout: default
 hide_sidebar: true
+nav_order: 1
 ---
 # Wing Lift: Technical Design Notes
 
