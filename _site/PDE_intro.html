@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+   
+   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-000000-0"></script>
+   <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', 'UA-000000-0');
+   </script>
+   
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Key Concepts in Partial Differential Equations (PDEs) | Yongjie’s Page</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="Key Concepts in Partial Differential Equations (PDEs)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A few games and posts about computational physics" />
+<meta property="og:description" content="A few games and posts about computational physics" />
+<link rel="canonical" href="http://localhost:4000/PDE_intro.html" />
+<meta property="og:url" content="http://localhost:4000/PDE_intro.html" />
+<meta property="og:site_name" content="Yongjie’s Page" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Key Concepts in Partial Differential Equations (PDEs)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"A few games and posts about computational physics","headline":"Key Concepts in Partial Differential Equations (PDEs)","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/images/profile.jpg?raw=true"}},"url":"http://localhost:4000/PDE_intro.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+   <link rel="stylesheet" href="/assets/css/style.css?v=e105daa9ebe3d194bdc9c11c871e827b0910f642">
+   
+   <style>
+      section.full-width {
+         float: none;
+         width: 100%;
+      }
+   </style>
+   
+   <!--[if lt IE 9]>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+   <![endif]-->
+</head>
+<body>
+   <div class="wrapper">
+      
+      <section class="full-width">
+         <h2 id="key-concepts-in-partial-differential-equations-pdes">Key Concepts in Partial Differential Equations (PDEs)</h2>
+
+<p>This note summarizes several fundamental aspects of partial differential equations from the perspective of computational physics and numerical modeling. The discussion emphasizes mathematical structure, well-posedness, and implications for numerical discretization.</p>
+
+<hr />
+
+<h3 id="1-classification-of-second-order-pdes">1. Classification of Second-Order PDEs</h3>
+
+<p>Second-order linear PDEs are typically classified into three canonical types:</p>
+
+<ul>
+  <li><strong>Elliptic</strong></li>
+  <li><strong>Parabolic</strong></li>
+  <li><strong>Hyperbolic</strong></li>
+</ul>
+
+<p>This classification is determined by the relationship among the coefficients of the highest-order derivatives. For a general second-order PDE in two variables,</p>
+
+<p>[
+A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
+]</p>
+
+<p>the discriminant ( B^2 - 4AC ) determines the type:</p>
+
+<ul>
+  <li>( B^2 - 4AC &lt; 0 ): elliptic</li>
+  <li>( B^2 - 4AC = 0 ): parabolic</li>
+  <li>( B^2 - 4AC &gt; 0 ): hyperbolic</li>
+</ul>
+
+<p>The classification directly influences numerical treatment. For example:</p>
+
+<ul>
+  <li>Elliptic problems require global coupling and typically lead to large linear systems.</li>
+  <li>Parabolic problems are time-dependent diffusion-type equations with stability constraints on time stepping.</li>
+  <li>Hyperbolic problems involve wave propagation and require careful treatment of characteristics and numerical dissipation.</li>
+</ul>
+
+<hr />
+
+<h3 id="2-general-solutions-and-particular-solutions">2. General Solutions and Particular Solutions</h3>
+
+<p>A PDE without initial or boundary conditions generally admits infinitely many solutions. These form the <strong>general solution</strong>, typically expressed as a family of functions containing arbitrary constants or functions.</p>
+
+<p>A <strong>well-posed problem</strong> requires:</p>
+
+<ul>
+  <li>Governing PDE</li>
+  <li>Boundary conditions</li>
+  <li>Initial conditions (if time-dependent)</li>
+</ul>
+
+<p>In theory, one may first derive the general analytical solution and then use the prescribed conditions to determine a unique particular solution. However:</p>
+
+<ul>
+  <li>Closed-form general solutions are rarely obtainable for realistic engineering systems.</li>
+  <li>Applying complex boundary conditions analytically is often intractable.</li>
+</ul>
+
+<p>Therefore, most practical PDE problems are solved numerically.</p>
+
+<hr />
+
+<h3 id="3-strong-form-and-weak-form">3. Strong Form and Weak Form</h3>
+
+<p>The <strong>strong form</strong> of a PDE requires the solution to satisfy the differential equation pointwise, assuming sufficient smoothness.</p>
+
+<p>The <strong>weak form</strong> is obtained by multiplying the PDE by a test function and integrating over the domain. Through integration by parts, derivatives are redistributed, reducing differentiability requirements.</p>
+
+<p>Converting derivatives into integrals:</p>
+
+<ul>
+  <li>Relaxes continuity requirements</li>
+  <li>Allows solutions in broader functional spaces</li>
+  <li>Enables discretization via basis functions</li>
+</ul>
+
+<p>This formulation underpins the <strong>Finite Element Method (FEM)</strong> and Galerkin methods.</p>
+
+<hr />
+
+<h3 id="4-boundary-conditions-and-external-forcing">4. Boundary Conditions and External Forcing</h3>
+
+<p>Correct specification of boundary conditions and loads ensures uniqueness and stability.</p>
+
+<p>Improper boundary treatment may cause:</p>
+
+<ul>
+  <li>Divergent iterative solvers</li>
+  <li>Singular or ill-conditioned matrices</li>
+  <li>Nonphysical results</li>
+</ul>
+
+<p>Mathematically, boundary conditions ensure the PDE problem is <strong>well-posed</strong>, meaning existence, uniqueness, and stability.</p>
+
+<hr />
+
+<h2 id="numerical-solution-strategies">Numerical Solution Strategies</h2>
+
+<p>To compute numerical solutions, the continuous domain must be discretized.</p>
+
+<p>Numerical methods are commonly divided into:</p>
+
+<ul>
+  <li><strong>Mesh-based methods</strong></li>
+  <li><strong>Mesh-free methods</strong></li>
+</ul>
+
+<hr />
+
+<h2 id="mesh-based-methods">Mesh-Based Methods</h2>
+
+<h3 id="1-finite-element-method-fem">1. Finite Element Method (FEM)</h3>
+
+<p>Key steps:</p>
+
+<ol>
+  <li>Partition the domain into elements.</li>
+  <li>Construct local stiffness matrices.</li>
+  <li>Assemble the global system.</li>
+  <li>Apply boundary conditions and loads.</li>
+  <li>Solve the resulting linear system.</li>
+</ol>
+
+<p>The system matrix is typically sparse. Explicit dynamics avoids solving a global linear system.</p>
+
+<p>Advantages:</p>
+
+<ul>
+  <li>Strong geometric flexibility</li>
+  <li>Broad multiphysics applicability</li>
+  <li>Rigorous weak-form foundation</li>
+</ul>
+
+<hr />
+
+<h3 id="2-finite-difference-time-domain-fdtd">2. Finite Difference Time Domain (FDTD)</h3>
+
+<p>FDTD is widely used in computational electromagnetics.</p>
+
+<p>Characteristics:</p>
+
+<ul>
+  <li>Structured spatial grid</li>
+  <li>Time-marching scheme</li>
+  <li>No global matrix inversion</li>
+  <li>Computation dominated by iterative updates</li>
+</ul>
+
+<hr />
+
+<h3 id="3-boundary-element-method-bem--method-of-moments-mom">3. Boundary Element Method (BEM) / Method of Moments (MOM)</h3>
+
+<p>BEM discretizes only boundaries:</p>
+
+<ul>
+  <li>3D problems use surface meshes</li>
+  <li>2D problems use line meshes</li>
+</ul>
+
+<p>Advantages:</p>
+
+<ul>
+  <li>Reduced dimensionality</li>
+</ul>
+
+<p>Disadvantages:</p>
+
+<ul>
+  <li>Dense matrices</li>
+  <li>Requires fast algorithms such as Fast Multipole Method</li>
+</ul>
+
+<p>MOM shares similar properties and is considered semi-analytical.</p>
+
+<hr />
+
+<h3 id="4-finite-volume-method-fvm">4. Finite Volume Method (FVM)</h3>
+
+<p>FVM integrates governing equations over control volumes.</p>
+
+<p>Procedure:</p>
+
+<ol>
+  <li>Divide the domain into control volumes.</li>
+  <li>Integrate the PDE over each volume.</li>
+  <li>Apply flux balance at interfaces.</li>
+</ol>
+
+<p>Advantages:</p>
+
+<ul>
+  <li>Strict local conservation</li>
+  <li>Widely used in CFD</li>
+</ul>
+
+<hr />
+
+<h2 id="mesh-free-methods">Mesh-Free Methods</h2>
+
+<h3 id="1-lattice-boltzmann-method-lbm">1. Lattice Boltzmann Method (LBM)</h3>
+
+<p>LBM solves a discretized Boltzmann equation at mesoscopic scale.</p>
+
+<p>Features:</p>
+
+<ul>
+  <li>Naturally parallelizable</li>
+  <li>No traditional mesh generation</li>
+  <li>Efficient preprocessing</li>
+</ul>
+
+<p>Suitable for complex flow and multiphase problems.</p>
+
+<hr />
+
+<h3 id="2-spectral-and-other-methods">2. Spectral and Other Methods</h3>
+
+<p>Examples:</p>
+
+<ul>
+  <li>Spectral methods</li>
+  <li>High-order particle methods</li>
+</ul>
+
+<p>These methods often provide high accuracy but may require smooth solutions and structured discretizations.</p>
+
+<hr />
+
+<h2 id="concluding-remarks">Concluding Remarks</h2>
+
+<p>Understanding PDE classification and mathematical structure is essential before selecting a numerical approach.</p>
+
+<ul>
+  <li>PDE type affects stability and discretization.</li>
+  <li>Weak formulations enable robust numerical approximation.</li>
+  <li>Proper boundary conditions ensure well-posedness.</li>
+</ul>
+
+<p>In computational physics, accuracy, stability, conservation, and efficiency must be considered simultaneously when solving PDE-based models.</p>
+
+<h2 id="references">References</h2>
+
+<ol>
+  <li>
+    <p>Ferziger, J. H., &amp; Perić, M. (2002). <em>Computational Methods for Fluid Dynamics</em> (3rd ed.). Springer.</p>
+  </li>
+  <li>
+    <p>Press, W. H., Teukolsky, S. A., Vetterling, W. T., &amp; Flannery, B. P. (2007). <em>Numerical Recipes: The Art of Scientific Computing</em> (3rd ed.). Cambridge University Press.</p>
+  </li>
+</ol>
+
+      </section>
+      
+   </div>
+   <script src="/assets/js/scale.fix.js"></script>
+</body>
+</html>

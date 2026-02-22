@@ -17,6 +17,8 @@
 
 - [Thoughts about solver development](/solver_intro)
 
+- [Thoughts about PDE](/PDE_intro)
+
 
 <!-- <img src="images/dummy_thumbnail.jpg?raw=true"/> -->
 
