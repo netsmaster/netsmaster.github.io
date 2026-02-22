@@ -19,6 +19,7 @@
 
 - [Thoughts about PDE](/PDE_intro)
 
+- [Solving linear systems](/linear_systems)
 
 <!-- <img src="images/dummy_thumbnail.jpg?raw=true"/> -->
 

@@ -2,13 +2,13 @@
 layout: default
 hide_sidebar: true
 ---
-## Key Concepts in Partial Differential Equations (PDEs)
+# Key Concepts in Partial Differential Equations (PDEs)
 
 This note summarizes several fundamental aspects of partial differential equations from the perspective of computational physics and numerical modeling. The discussion emphasizes mathematical structure, well-posedness, and implications for numerical discretization.
 
 ---
 
-### 1. Classification of Second-Order PDEs
+## 1. Classification of Second-Order PDEs
 
 Second-order linear PDEs are typically classified into three canonical types:
 
@@ -18,15 +18,24 @@ Second-order linear PDEs are typically classified into three canonical types:
 
 This classification is determined by the relationship among the coefficients of the highest-order derivatives. For a general second-order PDE in two variables,
 
-\[
-A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
-\]
+$$
+A \frac{\partial^2 u}{\partial x^2}
++ B \frac{\partial^2 u}{\partial x \partial y}
++ C \frac{\partial^2 u}{\partial y^2}
++ \cdots = 0,
+$$
 
-the discriminant \( B^2 - 4AC \) determines the type:
+the discriminant
 
-- \( B^2 - 4AC < 0 \): elliptic  
-- \( B^2 - 4AC = 0 \): parabolic  
-- \( B^2 - 4AC > 0 \): hyperbolic  
+$$
+\Delta = B^2 - 4AC
+$$
+
+determines the PDE type:
+
+- If $$\Delta < 0$$ → **elliptic**
+- If $$\Delta = 0$$ → **parabolic**
+- If $$\Delta > 0$$ → **hyperbolic**
 
 The classification directly influences numerical treatment. For example:
 
@@ -36,7 +45,7 @@ The classification directly influences numerical treatment. For example:
 
 ---
 
-### 2. General Solutions and Particular Solutions
+## 2. General Solutions and Particular Solutions
 
 A PDE without initial or boundary conditions generally admits infinitely many solutions. These form the **general solution**, typically expressed as a family of functions containing arbitrary constants or functions.
 
@@ -55,7 +64,7 @@ Therefore, most practical PDE problems are solved numerically.
 
 ---
 
-### 3. Strong Form and Weak Form
+## 3. Strong Form and Weak Form
 
 The **strong form** of a PDE requires the solution to satisfy the differential equation pointwise, assuming sufficient smoothness.
 
@@ -71,7 +80,7 @@ This formulation underpins the **Finite Element Method (FEM)** and Galerkin meth
 
 ---
 
-### 4. Boundary Conditions and External Forcing
+## 4. Boundary Conditions and External Forcing
 
 Correct specification of boundary conditions and loads ensures uniqueness and stability.
 
@@ -85,7 +94,7 @@ Mathematically, boundary conditions ensure the PDE problem is **well-posed**, me
 
 ---
 
-## Numerical Solution Strategies
+## 5. Numerical Solution Strategies
 
 To compute numerical solutions, the continuous domain must be discretized.
 
@@ -96,9 +105,9 @@ Numerical methods are commonly divided into:
 
 ---
 
-## Mesh-Based Methods
+### Mesh-Based Methods
 
-### 1. Finite Element Method (FEM)
+#### Finite Element Method (FEM)
 
 Key steps:
 
@@ -118,7 +127,7 @@ Advantages:
 
 ---
 
-### 2. Finite Difference Time Domain (FDTD)
+#### Finite Difference Time Domain (FDTD)
 
 FDTD is widely used in computational electromagnetics.
 
@@ -131,7 +140,7 @@ Characteristics:
 
 ---
 
-### 3. Boundary Element Method (BEM) / Method of Moments (MOM)
+#### Boundary Element Method (BEM) / Method of Moments (MOM)
 
 BEM discretizes only boundaries:
 
@@ -151,7 +160,7 @@ MOM shares similar properties and is considered semi-analytical.
 
 ---
 
-### 4. Finite Volume Method (FVM)
+#### Finite Volume Method (FVM)
 
 FVM integrates governing equations over control volumes.
 
@@ -168,9 +177,9 @@ Advantages:
 
 ---
 
-## Mesh-Free Methods
+### Mesh-Free Methods
 
-### 1. Lattice Boltzmann Method (LBM)
+#### Lattice Boltzmann Method (LBM)
 
 LBM solves a discretized Boltzmann equation at mesoscopic scale.
 
@@ -184,7 +193,7 @@ Suitable for complex flow and multiphase problems.
 
 ---
 
-### 2. Spectral and Other Methods
+#### Spectral and Other Methods
 
 Examples:
 
@@ -195,7 +204,7 @@ These methods often provide high accuracy but may require smooth solutions and s
 
 ---
 
-## Concluding Remarks
+## 6. Concluding Remarks
 
 Understanding PDE classification and mathematical structure is essential before selecting a numerical approach.
 

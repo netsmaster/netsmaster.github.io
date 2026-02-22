@@ -31,7 +31,7 @@
 {"@context":"https://schema.org","@type":"WebPage","description":"A few games and posts about computational physics","headline":"Key Concepts in Partial Differential Equations (PDEs)","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/images/profile.jpg?raw=true"}},"url":"http://localhost:4000/PDE_intro.html"}</script>
 <!-- End Jekyll SEO tag -->
 
-   <link rel="stylesheet" href="/assets/css/style.css?v=e105daa9ebe3d194bdc9c11c871e827b0910f642">
+   <link rel="stylesheet" href="/assets/css/style.css?v=7f71282f75b789f82ec6186123c3ffcddc9bd656">
    
    <style>
       section.full-width {
@@ -40,6 +40,18 @@
       }
    </style>
    
+   <script>
+      window.MathJax = {
+         tex: {
+            inlineMath: [['\\(', '\\)'], ['$', '$']],
+            displayMath: [['\\[', '\\]'], ['$$', '$$']]
+         },
+         options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+         }
+      };
+   </script>
+   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
    <!--[if lt IE 9]>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
    <![endif]-->
@@ -48,13 +60,13 @@
    <div class="wrapper">
       
       <section class="full-width">
-         <h2 id="key-concepts-in-partial-differential-equations-pdes">Key Concepts in Partial Differential Equations (PDEs)</h2>
+         <h1 id="key-concepts-in-partial-differential-equations-pdes">Key Concepts in Partial Differential Equations (PDEs)</h1>
 
 <p>This note summarizes several fundamental aspects of partial differential equations from the perspective of computational physics and numerical modeling. The discussion emphasizes mathematical structure, well-posedness, and implications for numerical discretization.</p>
 
 <hr />
 
-<h3 id="1-classification-of-second-order-pdes">1. Classification of Second-Order PDEs</h3>
+<h2 id="1-classification-of-second-order-pdes">1. Classification of Second-Order PDEs</h2>
 
 <p>Second-order linear PDEs are typically classified into three canonical types:</p>
 
@@ -66,16 +78,21 @@
 
 <p>This classification is determined by the relationship among the coefficients of the highest-order derivatives. For a general second-order PDE in two variables,</p>
 
-<p>[
-A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
-]</p>
+\[A \frac{\partial^2 u}{\partial x^2}
++ B \frac{\partial^2 u}{\partial x \partial y}
++ C \frac{\partial^2 u}{\partial y^2}
++ \cdots = 0,\]
 
-<p>the discriminant ( B^2 - 4AC ) determines the type:</p>
+<p>the discriminant</p>
+
+\[\Delta = B^2 - 4AC\]
+
+<p>determines the PDE type:</p>
 
 <ul>
-  <li>( B^2 - 4AC &lt; 0 ): elliptic</li>
-  <li>( B^2 - 4AC = 0 ): parabolic</li>
-  <li>( B^2 - 4AC &gt; 0 ): hyperbolic</li>
+  <li>If \(\Delta &lt; 0\) → <strong>elliptic</strong></li>
+  <li>If \(\Delta = 0\) → <strong>parabolic</strong></li>
+  <li>If \(\Delta &gt; 0\) → <strong>hyperbolic</strong></li>
 </ul>
 
 <p>The classification directly influences numerical treatment. For example:</p>
@@ -88,7 +105,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h3 id="2-general-solutions-and-particular-solutions">2. General Solutions and Particular Solutions</h3>
+<h2 id="2-general-solutions-and-particular-solutions">2. General Solutions and Particular Solutions</h2>
 
 <p>A PDE without initial or boundary conditions generally admits infinitely many solutions. These form the <strong>general solution</strong>, typically expressed as a family of functions containing arbitrary constants or functions.</p>
 
@@ -111,7 +128,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h3 id="3-strong-form-and-weak-form">3. Strong Form and Weak Form</h3>
+<h2 id="3-strong-form-and-weak-form">3. Strong Form and Weak Form</h2>
 
 <p>The <strong>strong form</strong> of a PDE requires the solution to satisfy the differential equation pointwise, assuming sufficient smoothness.</p>
 
@@ -129,7 +146,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h3 id="4-boundary-conditions-and-external-forcing">4. Boundary Conditions and External Forcing</h3>
+<h2 id="4-boundary-conditions-and-external-forcing">4. Boundary Conditions and External Forcing</h2>
 
 <p>Correct specification of boundary conditions and loads ensures uniqueness and stability.</p>
 
@@ -145,7 +162,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h2 id="numerical-solution-strategies">Numerical Solution Strategies</h2>
+<h2 id="5-numerical-solution-strategies">5. Numerical Solution Strategies</h2>
 
 <p>To compute numerical solutions, the continuous domain must be discretized.</p>
 
@@ -158,9 +175,9 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h2 id="mesh-based-methods">Mesh-Based Methods</h2>
+<h3 id="mesh-based-methods">Mesh-Based Methods</h3>
 
-<h3 id="1-finite-element-method-fem">1. Finite Element Method (FEM)</h3>
+<h4 id="finite-element-method-fem">Finite Element Method (FEM)</h4>
 
 <p>Key steps:</p>
 
@@ -184,7 +201,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h3 id="2-finite-difference-time-domain-fdtd">2. Finite Difference Time Domain (FDTD)</h3>
+<h4 id="finite-difference-time-domain-fdtd">Finite Difference Time Domain (FDTD)</h4>
 
 <p>FDTD is widely used in computational electromagnetics.</p>
 
@@ -199,7 +216,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h3 id="3-boundary-element-method-bem--method-of-moments-mom">3. Boundary Element Method (BEM) / Method of Moments (MOM)</h3>
+<h4 id="boundary-element-method-bem--method-of-moments-mom">Boundary Element Method (BEM) / Method of Moments (MOM)</h4>
 
 <p>BEM discretizes only boundaries:</p>
 
@@ -225,7 +242,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h3 id="4-finite-volume-method-fvm">4. Finite Volume Method (FVM)</h3>
+<h4 id="finite-volume-method-fvm">Finite Volume Method (FVM)</h4>
 
 <p>FVM integrates governing equations over control volumes.</p>
 
@@ -246,9 +263,9 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h2 id="mesh-free-methods">Mesh-Free Methods</h2>
+<h3 id="mesh-free-methods">Mesh-Free Methods</h3>
 
-<h3 id="1-lattice-boltzmann-method-lbm">1. Lattice Boltzmann Method (LBM)</h3>
+<h4 id="lattice-boltzmann-method-lbm">Lattice Boltzmann Method (LBM)</h4>
 
 <p>LBM solves a discretized Boltzmann equation at mesoscopic scale.</p>
 
@@ -264,7 +281,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h3 id="2-spectral-and-other-methods">2. Spectral and Other Methods</h3>
+<h4 id="spectral-and-other-methods">Spectral and Other Methods</h4>
 
 <p>Examples:</p>
 
@@ -277,7 +294,7 @@ A u_{xx} + B u_{xy} + C u_{yy} + \cdots = 0,
 
 <hr />
 
-<h2 id="concluding-remarks">Concluding Remarks</h2>
+<h2 id="6-concluding-remarks">6. Concluding Remarks</h2>
 
 <p>Understanding PDE classification and mathematical structure is essential before selecting a numerical approach.</p>
 
