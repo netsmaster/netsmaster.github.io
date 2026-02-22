@@ -1,6 +1,3 @@
-## Portfolio
-
----
 ### Games
 
 - [Wing lift](https://www.reddit.com/r/wing_lift_dev/)
@@ -17,6 +14,9 @@
 ### Posts
 
 - [Wing lift implementation](/wing_lift_intro)
+
+- [Thoughts about solver development](/solver_intro)
+
 
 <!-- <img src="images/dummy_thumbnail.jpg?raw=true"/> -->
 

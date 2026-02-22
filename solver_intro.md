@@ -1,3 +1,8 @@
+---
+layout: default
+hide_sidebar: true
+---
+
 # 1. Concept, Role, and Characteristics of a Solver  
 
 In industrial simulation software, the solver is the core computational component responsible for computing multiphysics problems through numerical algorithms. In some systems, it may be called an engine or a kernel program, but these terms refer to the same concept. Constraint solvers in geometric modeling and optimization solvers in operations research are outside the scope of this discussion. Unless otherwise specified, the term *solver* refers to commercial engineering simulation solvers.
